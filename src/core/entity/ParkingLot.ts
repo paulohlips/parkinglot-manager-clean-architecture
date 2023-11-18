@@ -1,15 +1,14 @@
 export default class ParkingLot {
-  code: any
-  capacity: any
-  openHour: any
-  closeHour: any
-
-  constructor (code, capacity, openHour, closeHour) {
-    this.code = code
-    this.capacity = capacity
-    this.openHour = openHour
-    this.closeHour = closeHour
-  }
+  occupiedSpaces: number
+  constructor (
+    readonly code: string,
+    readonly capacity: number,
+    readonly openHour: number,
+    readonly closeHour: number,
+    occupiedSpaces: number
+    ) {
+      this.occupiedSpaces = occupiedSpaces
+    }
 
   isOpen (date: Date) {
     const hour = date.getHours()
