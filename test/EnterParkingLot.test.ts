@@ -12,3 +12,24 @@ test("should test enter parking lot", async () => {
   const parkingLotAfterEnter = await getParkingLot.execute("shopping")
   expect(parkingLotAfterEnter.occupiedSpaces).toBe(1)
 })
+
+test("should not enter when parking lot is closed", async () => {
+  const parkingLotRepository = new ParkingLotRepository()
+  const enterParkingLot = new EnterParkingLot(parkingLotRepository)
+  await expect(enterParkingLot.execute("shopping", "JHP-8105", new Date("2023-11-17T00:00:00")))
+    .rejects
+    .toThrow(new Error("The parking lot is closed"))
+})
+
+test("should not enter when parking lot is full", async () => {
+  const parkingLotRepository = new ParkingLotRepository()
+  const enterParkingLot = new EnterParkingLot(parkingLotRepository)
+  await enterParkingLot.execute("shopping", "JHP-8105", new Date("2023-11-17T10:00:00"))
+  await enterParkingLot.execute("shopping", "JHP-8105", new Date("2023-11-17T10:00:00"))
+  await enterParkingLot.execute("shopping", "JHP-8105", new Date("2023-11-17T10:00:00"))
+  await enterParkingLot.execute("shopping", "JHP-8105", new Date("2023-11-17T10:00:00"))
+  await enterParkingLot.execute("shopping", "JHP-8105", new Date("2023-11-17T10:00:00"))
+  await expect(enterParkingLot.execute("shopping", "JHP-8105", new Date("2023-11-17T10:00:00")))
+    .rejects
+    .toThrow(new Error("Parking lot is full"))
+})
